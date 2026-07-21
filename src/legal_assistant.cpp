@@ -93,12 +93,14 @@ LegalAssistant::LegalAssistant(
     std::shared_ptr<RetrievalProvider> retrieval_provider,
     std::shared_ptr<InmateDataConnector> data_connector,
     std::shared_ptr<PolicyEngine> policy_engine,
-    LegalAssistantConfig config)
+    LegalAssistantConfig config,
+    std::shared_ptr<AuditWriter> audit_writer)
     : llm_provider_(std::move(llm_provider)),
       retrieval_provider_(std::move(retrieval_provider)),
       data_connector_(std::move(data_connector)),
       policy_engine_(std::move(policy_engine)),
       config_(std::move(config)),
+      audit_writer_(std::move(audit_writer)),
       audit_sequence_(0) {
     if (!llm_provider_ || !retrieval_provider_ || !data_connector_ || !policy_engine_) {
         std::string missing;
@@ -126,6 +128,16 @@ LegalAdviceResponse LegalAssistant::Advise(const LegalQueryContext& context) {
         response.escalation_reason = "Requester does not have permission to access inmate records.";
         AppendAudit(kActionAccessDenied, response.escalation_reason, response.audit_id);
         return response;
+    }
+
+    // INMATE requesters may only query their own records. The requester_id must
+    // be provided and must exactly match the inmate_id being queried.
+    if (context.role == AccessRole::INMATE) {
+        if (context.requester_id.empty() || context.requester_id != context.inmate_id) {
+            response.escalation_reason = "INMATE requesters may only query their own records.";
+            AppendAudit(kActionAccessDenied, response.escalation_reason, response.audit_id);
+            return response;
+        }
     }
 
     const std::string inmate_summary = data_connector_->GetInmateCaseSummary(context.inmate_id);
@@ -196,13 +208,19 @@ void LegalAssistant::AppendAudit(
     const std::string& action,
     const std::string& details,
     const std::string& audit_id) {
-    std::lock_guard<std::mutex> lock(audit_trail_mutex_);
-    audit_trail_.push_back({
+    AuditEvent event{
         audit_id,
         ToIsoTimestampUtc(),
         action,
         details
-    });
+    };
+    {
+        std::lock_guard<std::mutex> lock(audit_trail_mutex_);
+        audit_trail_.push_back(event);
+    }
+    if (audit_writer_) {
+        audit_writer_->Write(event);
+    }
 }
 
 } // namespace UniversalSDK
