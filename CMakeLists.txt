@@ -10,6 +10,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Source files
 set(SOURCES
     src/universal_sdk.cpp
+    src/legal_assistant.cpp
 )
 
 # Platform-specific implementations
@@ -44,5 +45,9 @@ install(TARGETS universal_sdk
 )
 
 install(FILES include/universal_sdk.h
+    DESTINATION include
+)
+
+install(FILES include/legal_assistant.h
     DESTINATION include
 )

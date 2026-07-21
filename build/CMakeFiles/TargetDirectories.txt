@@ -1,0 +1,7 @@
+/home/runner/work/universal-sdk/universal-sdk/build/CMakeFiles/universal_sdk.dir
+/home/runner/work/universal-sdk/universal-sdk/build/CMakeFiles/edit_cache.dir
+/home/runner/work/universal-sdk/universal-sdk/build/CMakeFiles/rebuild_cache.dir
+/home/runner/work/universal-sdk/universal-sdk/build/CMakeFiles/list_install_components.dir
+/home/runner/work/universal-sdk/universal-sdk/build/CMakeFiles/install.dir
+/home/runner/work/universal-sdk/universal-sdk/build/CMakeFiles/install/local.dir
+/home/runner/work/universal-sdk/universal-sdk/build/CMakeFiles/install/strip.dir
