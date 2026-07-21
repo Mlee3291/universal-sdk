@@ -184,26 +184,12 @@ universal_sdk/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/build
 .PHONY : universal_sdk/fast
 
-#=============================================================================
-# Target rules for targets named legal_assistant_test
-
-# Build rule for target.
-legal_assistant_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 legal_assistant_test
-.PHONY : legal_assistant_test
-
-# fast build rule for target.
-legal_assistant_test/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legal_assistant_test.dir/build.make CMakeFiles/legal_assistant_test.dir/build
-.PHONY : legal_assistant_test/fast
-
 src/legal_assistant.o: src/legal_assistant.cpp.o
 .PHONY : src/legal_assistant.o
 
 # target to build an object file
 src/legal_assistant.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legal_assistant_test.dir/build.make CMakeFiles/legal_assistant_test.dir/src/legal_assistant.cpp.o
 .PHONY : src/legal_assistant.cpp.o
 
 src/legal_assistant.i: src/legal_assistant.cpp.i
@@ -212,7 +198,6 @@ src/legal_assistant.i: src/legal_assistant.cpp.i
 # target to preprocess a source file
 src/legal_assistant.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legal_assistant_test.dir/build.make CMakeFiles/legal_assistant_test.dir/src/legal_assistant.cpp.i
 .PHONY : src/legal_assistant.cpp.i
 
 src/legal_assistant.s: src/legal_assistant.cpp.s
@@ -221,7 +206,6 @@ src/legal_assistant.s: src/legal_assistant.cpp.s
 # target to generate assembly for a file
 src/legal_assistant.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legal_assistant_test.dir/build.make CMakeFiles/legal_assistant_test.dir/src/legal_assistant.cpp.s
 .PHONY : src/legal_assistant.cpp.s
 
 src/platform/linux_impl.o: src/platform/linux_impl.cpp.o
@@ -272,30 +256,6 @@ src/universal_sdk.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.s
 .PHONY : src/universal_sdk.cpp.s
 
-tests/legal_assistant_test.o: tests/legal_assistant_test.cpp.o
-.PHONY : tests/legal_assistant_test.o
-
-# target to build an object file
-tests/legal_assistant_test.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legal_assistant_test.dir/build.make CMakeFiles/legal_assistant_test.dir/tests/legal_assistant_test.cpp.o
-.PHONY : tests/legal_assistant_test.cpp.o
-
-tests/legal_assistant_test.i: tests/legal_assistant_test.cpp.i
-.PHONY : tests/legal_assistant_test.i
-
-# target to preprocess a source file
-tests/legal_assistant_test.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legal_assistant_test.dir/build.make CMakeFiles/legal_assistant_test.dir/tests/legal_assistant_test.cpp.i
-.PHONY : tests/legal_assistant_test.cpp.i
-
-tests/legal_assistant_test.s: tests/legal_assistant_test.cpp.s
-.PHONY : tests/legal_assistant_test.s
-
-# target to generate assembly for a file
-tests/legal_assistant_test.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/legal_assistant_test.dir/build.make CMakeFiles/legal_assistant_test.dir/tests/legal_assistant_test.cpp.s
-.PHONY : tests/legal_assistant_test.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -309,7 +269,6 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... legal_assistant_test"
 	@echo "... universal_sdk"
 	@echo "... src/legal_assistant.o"
 	@echo "... src/legal_assistant.i"
@@ -320,9 +279,6 @@ help:
 	@echo "... src/universal_sdk.o"
 	@echo "... src/universal_sdk.i"
 	@echo "... src/universal_sdk.s"
-	@echo "... tests/legal_assistant_test.o"
-	@echo "... tests/legal_assistant_test.i"
-	@echo "... tests/legal_assistant_test.s"
 .PHONY : help
 
 
