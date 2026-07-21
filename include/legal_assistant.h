@@ -2,6 +2,7 @@
 #define LEGAL_ASSISTANT_H
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 #include <atomic>
@@ -127,6 +128,7 @@ private:
     std::shared_ptr<InmateDataConnector> data_connector_;
     std::shared_ptr<PolicyEngine> policy_engine_;
     LegalAssistantConfig config_;
+    mutable std::mutex audit_trail_mutex_;
     std::vector<AuditEvent> audit_trail_;
     std::atomic<unsigned long long> audit_sequence_;
 };

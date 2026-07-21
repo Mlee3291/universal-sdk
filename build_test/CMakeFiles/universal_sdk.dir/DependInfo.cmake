@@ -1,0 +1,26 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  )
+
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/runner/work/universal-sdk/universal-sdk/src/legal_assistant.cpp" "CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o" "gcc" "CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o.d"
+  "/home/runner/work/universal-sdk/universal-sdk/src/platform/linux_impl.cpp" "CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o" "gcc" "CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o.d"
+  "/home/runner/work/universal-sdk/universal-sdk/src/universal_sdk.cpp" "CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.o" "gcc" "CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.o.d"
+  "" "lib/libuniversal_sdk.so" "gcc" "CMakeFiles/universal_sdk.dir/link.d"
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_FORWARD_LINKED_INFO_FILES
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

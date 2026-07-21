@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <iomanip>
+#include <mutex>
 #include <sstream>
 #include <stdexcept>
 
@@ -167,6 +168,7 @@ LegalAdviceResponse LegalAssistant::Advise(const LegalQueryContext& context) {
 }
 
 const std::vector<AuditEvent>& LegalAssistant::GetAuditTrail() const {
+    std::lock_guard<std::mutex> lock(audit_trail_mutex_);
     return audit_trail_;
 }
 
@@ -194,6 +196,7 @@ void LegalAssistant::AppendAudit(
     const std::string& action,
     const std::string& details,
     const std::string& audit_id) {
+    std::lock_guard<std::mutex> lock(audit_trail_mutex_);
     audit_trail_.push_back({
         audit_id,
         ToIsoTimestampUtc(),
