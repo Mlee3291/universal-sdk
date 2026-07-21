@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/runner/work/universal-sdk/universal-sdk/src/legal_assistant.cpp" "CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o" "gcc" "CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o.d"
   "/home/runner/work/universal-sdk/universal-sdk/src/platform/linux_impl.cpp" "CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o" "gcc" "CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o.d"
   "/home/runner/work/universal-sdk/universal-sdk/src/universal_sdk.cpp" "CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.o" "gcc" "CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.o.d"
   "" "lib/libuniversal_sdk.so" "gcc" "CMakeFiles/universal_sdk.dir/link.d"

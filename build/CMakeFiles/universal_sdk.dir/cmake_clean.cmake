@@ -1,5 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/universal_sdk.dir/link.d"
+  "CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o"
+  "CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o.d"
   "CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o"
   "CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o.d"
   "CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.o"

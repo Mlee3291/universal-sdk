@@ -174,6 +174,30 @@ universal_sdk/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/build
 .PHONY : universal_sdk/fast
 
+src/legal_assistant.o: src/legal_assistant.cpp.o
+.PHONY : src/legal_assistant.o
+
+# target to build an object file
+src/legal_assistant.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o
+.PHONY : src/legal_assistant.cpp.o
+
+src/legal_assistant.i: src/legal_assistant.cpp.i
+.PHONY : src/legal_assistant.i
+
+# target to preprocess a source file
+src/legal_assistant.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.i
+.PHONY : src/legal_assistant.cpp.i
+
+src/legal_assistant.s: src/legal_assistant.cpp.s
+.PHONY : src/legal_assistant.s
+
+# target to generate assembly for a file
+src/legal_assistant.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/universal_sdk.dir/build.make CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.s
+.PHONY : src/legal_assistant.cpp.s
+
 src/platform/linux_impl.o: src/platform/linux_impl.cpp.o
 .PHONY : src/platform/linux_impl.o
 
@@ -235,6 +259,9 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... universal_sdk"
+	@echo "... src/legal_assistant.o"
+	@echo "... src/legal_assistant.i"
+	@echo "... src/legal_assistant.s"
 	@echo "... src/platform/linux_impl.o"
 	@echo "... src/platform/linux_impl.i"
 	@echo "... src/platform/linux_impl.s"

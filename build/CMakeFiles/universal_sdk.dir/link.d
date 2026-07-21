@@ -2,6 +2,7 @@ lib/libuniversal_sdk.so: \
   /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/crti.o \
   /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o \
   CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.o \
+  CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o \
   CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o \
   /usr/lib/gcc/x86_64-linux-gnu/13/libstdc++.so \
   /usr/lib/gcc/x86_64-linux-gnu/13/../../../x86_64-linux-gnu/libm.so \
@@ -33,6 +34,8 @@ lib/libuniversal_sdk.so: \
 /usr/lib/gcc/x86_64-linux-gnu/13/crtbeginS.o:
 
 CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.o:
+
+CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o:
 
 CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o:
 
