@@ -89,6 +89,8 @@ if(GTest_FOUND)
         tests/universal_sdk_test.cpp
     )
     add_sdk_test(universal_sdk_test)
+else()
+    message(STATUS "GTest not found; skipping test targets. Install GTest to enable test discovery and execution.")
 endif()
 
 # ---------------------------------------------------------------------------
