@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/legal_assistant_test.dir/link.d CMakeFiles/legal_assistant_test.dir/tests/legal_assistant_test.cpp.o CMakeFiles/legal_assistant_test.dir/src/legal_assistant.cpp.o -o legal_assistant_test  /usr/lib/x86_64-linux-gnu/libgtest_main.a /usr/lib/x86_64-linux-gnu/libgtest.a

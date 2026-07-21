@@ -51,3 +51,26 @@ install(FILES include/universal_sdk.h
 install(FILES include/legal_assistant.h
     DESTINATION include
 )
+
+# Tests
+enable_testing()
+
+find_package(GTest QUIET)
+if(GTest_FOUND)
+    add_executable(legal_assistant_test
+        tests/legal_assistant_test.cpp
+        src/legal_assistant.cpp
+    )
+
+    target_include_directories(legal_assistant_test PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
+
+    target_link_libraries(legal_assistant_test
+        GTest::GTest
+        GTest::Main
+    )
+
+    include(GoogleTest)
+    gtest_discover_tests(legal_assistant_test)
+endif()
