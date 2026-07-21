@@ -10,6 +10,10 @@ namespace UniversalSDK {
 
 namespace {
 
+constexpr const char* kActionAccessDenied = "access_denied";
+constexpr const char* kActionEscalated = "escalated";
+constexpr const char* kActionAdviceGenerated = "advice_generated";
+
 std::string ToIsoTimestampUtc() {
     const auto now = std::chrono::system_clock::now();
     const auto time_t_now = std::chrono::system_clock::to_time_t(now);
@@ -28,7 +32,7 @@ std::string ToIsoTimestampUtc() {
 
 bool ContainsValue(const std::vector<std::string>& values, const std::string& target) {
     if (values.empty()) {
-        return true;
+        return false;
     }
 
     return std::find(values.begin(), values.end(), target) != values.end();
@@ -96,7 +100,20 @@ LegalAssistant::LegalAssistant(
       config_(std::move(config)),
       audit_sequence_(0) {
     if (!llm_provider_ || !retrieval_provider_ || !data_connector_ || !policy_engine_) {
-        throw std::invalid_argument("LegalAssistant providers and policy engine must be configured");
+        std::string missing;
+        if (!llm_provider_) {
+            missing += "llm_provider ";
+        }
+        if (!retrieval_provider_) {
+            missing += "retrieval_provider ";
+        }
+        if (!data_connector_) {
+            missing += "data_connector ";
+        }
+        if (!policy_engine_) {
+            missing += "policy_engine ";
+        }
+        throw std::invalid_argument("Missing required dependency: " + missing);
     }
 }
 
@@ -106,7 +123,7 @@ LegalAdviceResponse LegalAssistant::Advise(const LegalQueryContext& context) {
 
     if (!data_connector_->HasAccessToInmate(context.inmate_id, context.role)) {
         response.escalation_reason = "Requester does not have permission to access inmate records.";
-        AppendAudit("access_denied", response.escalation_reason, response.audit_id);
+        AppendAudit(kActionAccessDenied, response.escalation_reason, response.audit_id);
         return response;
     }
 
@@ -133,7 +150,7 @@ LegalAdviceResponse LegalAssistant::Advise(const LegalQueryContext& context) {
             "Confirm jurisdiction and case type coverage for this request.",
             "Verify inmate consent and record-sharing authorization."
         };
-        AppendAudit("escalated", decision.reason, response.audit_id);
+        AppendAudit(kActionEscalated, decision.reason, response.audit_id);
         return response;
     }
 
@@ -145,7 +162,7 @@ LegalAdviceResponse LegalAssistant::Advise(const LegalQueryContext& context) {
         "Escalate to legal counsel if facts change or risk increases."
     };
 
-    AppendAudit("advice_generated", "Policy-approved response produced with citations.", response.audit_id);
+    AppendAudit(kActionAdviceGenerated, "Policy-approved response produced with citations.", response.audit_id);
     return response;
 }
 
@@ -157,7 +174,7 @@ std::string LegalAssistant::BuildPrompt(
     const LegalQueryContext& context,
     const std::string& inmate_summary) const {
     std::ostringstream prompt;
-    prompt << "You are an inmate legal-assistance system providing informational guidance only.\n";
+    prompt << "You are an inmate legal assistance system providing informational guidance only.\n";
     prompt << "Jurisdiction: " << context.jurisdiction << "\n";
     prompt << "Case type: " << context.case_type << "\n";
     prompt << "Inmate summary: " << inmate_summary << "\n";
@@ -167,9 +184,9 @@ std::string LegalAssistant::BuildPrompt(
 }
 
 std::string LegalAssistant::NextAuditId() {
-    ++audit_sequence_;
+    const unsigned long long sequence = audit_sequence_.fetch_add(1, std::memory_order_relaxed) + 1;
     std::ostringstream stream;
-    stream << "audit-" << audit_sequence_;
+    stream << "audit-" << sequence;
     return stream.str();
 }
 

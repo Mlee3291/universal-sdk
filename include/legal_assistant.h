@@ -4,8 +4,11 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <atomic>
 
 namespace UniversalSDK {
+
+constexpr double kDefaultConfidenceThreshold = 0.75;
 
 enum class AccessRole {
     INMATE,
@@ -57,7 +60,7 @@ struct AuditEvent {
 struct LegalAssistantConfig {
     std::vector<std::string> allowed_jurisdictions;
     std::vector<std::string> allowed_case_types;
-    double confidence_threshold = 0.75;
+    double confidence_threshold = kDefaultConfidenceThreshold;
 };
 
 class LLMProvider {
@@ -125,7 +128,7 @@ private:
     std::shared_ptr<PolicyEngine> policy_engine_;
     LegalAssistantConfig config_;
     std::vector<AuditEvent> audit_trail_;
-    unsigned long long audit_sequence_;
+    std::atomic<unsigned long long> audit_sequence_;
 };
 
 } // namespace UniversalSDK
