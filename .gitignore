@@ -1,2 +1,5 @@
 build/
 build_test/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
