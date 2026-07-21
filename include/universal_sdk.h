@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "legal_assistant.h"
 
 namespace UniversalSDK {
 
@@ -40,6 +41,14 @@ public:
     // Utility functions
     bool IsInitialized() const;
     std::vector<std::string> GetAvailableFeatures() const;
+
+    // Legal-assistant module factory
+    std::unique_ptr<LegalAssistant> CreateLegalAssistant(
+        std::shared_ptr<LLMProvider> llm_provider,
+        std::shared_ptr<RetrievalProvider> retrieval_provider,
+        std::shared_ptr<InmateDataConnector> data_connector,
+        std::shared_ptr<PolicyEngine> policy_engine,
+        LegalAssistantConfig config = LegalAssistantConfig{}) const;
 
 private:
     bool initialized_;

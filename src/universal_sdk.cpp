@@ -1,4 +1,5 @@
 #include "universal_sdk.h"
+#include "legal_assistant.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -94,8 +95,23 @@ std::vector<std::string> UniversalSDK::GetAvailableFeatures() const {
         "Platform Detection",
         "System Information",
         "Command Execution",
-        "Cross-Platform Support"
+        "Cross-Platform Support",
+        "Inmate Legal Assistance"
     };
+}
+
+std::unique_ptr<LegalAssistant> UniversalSDK::CreateLegalAssistant(
+    std::shared_ptr<LLMProvider> llm_provider,
+    std::shared_ptr<RetrievalProvider> retrieval_provider,
+    std::shared_ptr<InmateDataConnector> data_connector,
+    std::shared_ptr<PolicyEngine> policy_engine,
+    LegalAssistantConfig config) const {
+    return std::make_unique<LegalAssistant>(
+        std::move(llm_provider),
+        std::move(retrieval_provider),
+        std::move(data_connector),
+        std::move(policy_engine),
+        std::move(config));
 }
 
 } // namespace UniversalSDK
