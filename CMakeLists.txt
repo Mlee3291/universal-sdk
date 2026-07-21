@@ -70,6 +70,7 @@ if(GTest_FOUND)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
         )
         target_link_libraries(${target_name}
+            universal_sdk
             GTest::GTest
             GTest::Main
         )
@@ -77,33 +78,15 @@ if(GTest_FOUND)
         gtest_discover_tests(${target_name})
     endmacro()
 
-    # Shared platform source for test executables
-    set(PLATFORM_SRC "")
-    if(WIN32)
-        set(PLATFORM_SRC src/platform/win32_impl.cpp)
-    elseif(ANDROID)
-        set(PLATFORM_SRC src/platform/android_impl.cpp)
-    elseif(UNIX)
-        set(PLATFORM_SRC src/platform/linux_impl.cpp)
-    else()
-        set(PLATFORM_SRC src/platform/stub_platform_impl.cpp)
-    endif()
-
-    # legal_assistant tests
+    # legal_assistant tests — link against the library
     add_executable(legal_assistant_test
         tests/legal_assistant_test.cpp
-        src/legal_assistant.cpp
     )
     add_sdk_test(legal_assistant_test)
 
-    # universal_sdk core tests
+    # universal_sdk core tests — link against the library
     add_executable(universal_sdk_test
         tests/universal_sdk_test.cpp
-        src/universal_sdk.cpp
-        src/legal_assistant.cpp
-        src/stub_providers.cpp
-        src/file_audit_writer.cpp
-        ${PLATFORM_SRC}
     )
     add_sdk_test(universal_sdk_test)
 endif()
@@ -113,11 +96,10 @@ endif()
 # ---------------------------------------------------------------------------
 add_executable(legal_assistant_sample
     examples/legal_assistant_sample.cpp
-    src/legal_assistant.cpp
-    src/stub_providers.cpp
-    src/file_audit_writer.cpp
-    ${PLATFORM_SRC}
 )
 target_include_directories(legal_assistant_sample PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+target_link_libraries(legal_assistant_sample
+    universal_sdk
 )
