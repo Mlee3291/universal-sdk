@@ -31,6 +31,9 @@ struct LegalQueryContext {
     std::string question;
     AccessRole role = AccessRole::UNKNOWN;
     bool consent_granted = false;
+    // Identity of the requester. When role is INMATE this must equal inmate_id;
+    // mismatches are denied at the LegalAssistant layer before any policy check.
+    std::string requester_id;
 };
 
 struct PolicyDecision {
@@ -106,6 +109,14 @@ public:
         const LegalAssistantConfig& config) override;
 };
 
+// Sink interface for writing audit events to an external store (e.g. a file).
+// Implementations must be thread-safe: Write() may be called concurrently.
+class AuditWriter {
+public:
+    virtual ~AuditWriter() = default;
+    virtual void Write(const AuditEvent& event) = 0;
+};
+
 class LegalAssistant {
 public:
     LegalAssistant(
@@ -113,7 +124,8 @@ public:
         std::shared_ptr<RetrievalProvider> retrieval_provider,
         std::shared_ptr<InmateDataConnector> data_connector,
         std::shared_ptr<PolicyEngine> policy_engine,
-        LegalAssistantConfig config = LegalAssistantConfig{});
+        LegalAssistantConfig config = LegalAssistantConfig{},
+        std::shared_ptr<AuditWriter> audit_writer = nullptr);
 
     LegalAdviceResponse Advise(const LegalQueryContext& context);
     const std::vector<AuditEvent>& GetAuditTrail() const;
@@ -128,6 +140,7 @@ private:
     std::shared_ptr<InmateDataConnector> data_connector_;
     std::shared_ptr<PolicyEngine> policy_engine_;
     LegalAssistantConfig config_;
+    std::shared_ptr<AuditWriter> audit_writer_;
     mutable std::mutex audit_trail_mutex_;
     std::vector<AuditEvent> audit_trail_;
     std::atomic<unsigned long long> audit_sequence_;
