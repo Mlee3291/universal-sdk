@@ -1,5 +1,0 @@
-if(EXISTS "/home/runner/work/universal-sdk/universal-sdk/build_test/legal_assistant_test[1]_tests.cmake")
-  include("/home/runner/work/universal-sdk/universal-sdk/build_test/legal_assistant_test[1]_tests.cmake")
-else()
-  add_test(legal_assistant_test_NOT_BUILT legal_assistant_test_NOT_BUILT)
-endif()
