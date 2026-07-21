@@ -32,7 +32,7 @@ std::string ToIsoTimestampUtc() {
 
 bool ContainsValue(const std::vector<std::string>& values, const std::string& target) {
     if (values.empty()) {
-        return false;
+        return true;
     }
 
     return std::find(values.begin(), values.end(), target) != values.end();
