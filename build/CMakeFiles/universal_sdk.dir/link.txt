@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/universal_sdk.dir/link.d -shared -Wl,-soname,libuniversal_sdk.so -o lib/libuniversal_sdk.so CMakeFiles/universal_sdk.dir/src/universal_sdk.cpp.o CMakeFiles/universal_sdk.dir/src/legal_assistant.cpp.o CMakeFiles/universal_sdk.dir/src/platform/linux_impl.cpp.o

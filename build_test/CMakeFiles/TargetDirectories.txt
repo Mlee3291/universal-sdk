@@ -1,9 +1,0 @@
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/universal_sdk.dir
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/legal_assistant_test.dir
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/test.dir
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/edit_cache.dir
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/rebuild_cache.dir
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/list_install_components.dir
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/install.dir
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/install/local.dir
-/home/runner/work/universal-sdk/universal-sdk/build_test/CMakeFiles/install/strip.dir
