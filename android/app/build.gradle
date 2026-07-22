@@ -25,6 +25,8 @@ android {
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
+            // Keep this version in sync with the cmake package installed in
+            // .github/workflows/android.yml ("cmake;3.22.1").
             version "3.22.1"
         }
     }
