@@ -133,7 +133,52 @@ cmake -B build && cmake --build build --target legal_assistant_sample
 
 ---
 
-## Implementing your own providers
+## Android APK
+
+The `android/` directory contains a full Android application that wraps the SDK
+via JNI/NDK, providing an on-device UI for inmate legal queries.
+
+### Prerequisites
+- Android Studio Hedgehog (2023.1) or newer, **or** the Android command-line tools
+- Android NDK r27+ and CMake 3.22+ (installed via SDK Manager)
+- JDK 17+
+
+### Build from Android Studio
+1. Open `android/` as a project in Android Studio.
+2. Let Gradle sync and download dependencies.
+3. Run **Build → Build APK(s)** (or press the ▶ run button to deploy to a device/emulator).
+
+The debug APK is written to `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+### Build from the command line
+```bash
+cd android
+chmod +x gradlew
+./gradlew assembleDebug
+```
+
+The signed release APK:
+```bash
+./gradlew assembleRelease
+```
+
+### Architecture
+| Layer | Files |
+|-------|-------|
+| Android UI (Java) | `android/app/src/main/java/…/MainActivity.java` |
+| JNI wrapper (Java) | `…/LegalAssistantJNI.java`, `…/LegalAdviceResult.java` |
+| JNI bridge (C++) | `android/app/src/main/cpp/jni_bridge.cpp` |
+| NDK build | `android/app/src/main/cpp/CMakeLists.txt` |
+
+The native layer compiles the same C++ SDK sources used on Linux/Windows
+(via `android_impl.cpp`) and exposes two JNI functions:
+
+| JNI method | Description |
+|-----------|-------------|
+| `queryLegalAdvice(…)` | Submit a legal query; returns a JSON-encoded `LegalAdviceResult` |
+| `isSDKAvailable()` | Confirms the native library loaded correctly |
+
+
 
 | Interface | Purpose |
 |-----------|---------|

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Inmate Legal Support</string>
+    <string name="app_subtitle">Confidential legal assistance — not a substitute for licensed counsel</string>
+
+    <string name="hint_inmate_id">Inmate ID *</string>
+    <string name="hint_jurisdiction">Jurisdiction (e.g. CA, NY) *</string>
+    <string name="hint_case_type">Case type (e.g. appeal, parole) *</string>
+    <string name="hint_question">Legal question *</string>
+    <string name="hint_case_summary">Case summary (optional)</string>
+
+    <string name="label_consent">I consent to my legal data being used for this query *</string>
+    <string name="btn_get_advice">Get Legal Advice</string>
+
+    <string name="error_required_fields">Please fill in all required fields (*).</string>
+    <string name="error_consent_required">You must provide consent to continue.</string>
+    <string name="error_parse_failed">Failed to parse response from SDK:</string>
+</resources>
