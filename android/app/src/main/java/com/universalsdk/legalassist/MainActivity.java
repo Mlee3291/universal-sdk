@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         tvResults.setText(sb.toString().trim());
         tvResults.setVisibility(View.VISIBLE);
-        scrollRoot.post(() -> scrollRoot.smoothScrollTo(0, tvResults.getTop()));
+        tvResults.post(() -> scrollRoot.smoothScrollTo(0, tvResults.getTop()));
     }
 
     private void appendSection(
