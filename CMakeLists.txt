@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(universal-sdk VERSION 1.0.0 LANGUAGES CXX)
+project(universal-sdk VERSION 2.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -41,6 +41,12 @@ target_include_directories(universal_sdk
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
+)
+
+# Expose the CMake project version to C++ code via a compile definition so that
+# GetVersion() and CMakeLists.txt stay in sync automatically.
+target_compile_definitions(universal_sdk PRIVATE
+    UNIVERSAL_SDK_VERSION="${PROJECT_VERSION}"
 )
 
 # Installation rules
