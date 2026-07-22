@@ -50,7 +50,7 @@ std::string EscapeJson(const std::string& s) {
                 if (c < 0x20) {
                     std::ostringstream escaped;
                     escaped << "\\u"
-                            << std::hex << std::uppercase << std::setw(4)
+                            << std::hex << std::setw(4)
                             << std::setfill('0') << static_cast<int>(c);
                     out += escaped.str();
                 } else {
