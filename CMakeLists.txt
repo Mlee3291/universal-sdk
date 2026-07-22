@@ -43,6 +43,12 @@ target_include_directories(universal_sdk
         $<INSTALL_INTERFACE:include>
 )
 
+# Expose the CMake project version to C++ code via a compile definition so that
+# GetVersion() and CMakeLists.txt stay in sync automatically.
+target_compile_definitions(universal_sdk PRIVATE
+    UNIVERSAL_SDK_VERSION="${PROJECT_VERSION}"
+)
+
 # Installation rules
 install(TARGETS universal_sdk
     LIBRARY DESTINATION lib

@@ -71,7 +71,7 @@ std::string UniversalSDK::GetPlatformName() const {
 }
 
 std::string UniversalSDK::GetVersion() const {
-    return "2.0.0";
+    return UNIVERSAL_SDK_VERSION;
 }
 
 std::string UniversalSDK::GetSDKInfo() const {
