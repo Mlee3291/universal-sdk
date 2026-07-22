@@ -28,7 +28,7 @@ bool UniversalSDK::Initialize() {
 #elif defined(__linux__) && !defined(__ANDROID__)
         current_platform_ = Platform::LINUX;
 #elif defined(__ANDROID__)
-        current_platform_ = Platform::ANDROID_OS;
+        current_platform_ = Platform::ANDROID;
 #else
         current_platform_ = Platform::UNKNOWN;
         platform_impl_->Shutdown();
@@ -63,7 +63,7 @@ std::string UniversalSDK::GetPlatformName() const {
             return "Windows";
         case Platform::LINUX:
             return "Linux";
-        case Platform::ANDROID_OS:
+        case Platform::ANDROID:
             return "Android";
         default:
             return "Unknown";
