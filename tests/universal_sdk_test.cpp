@@ -73,7 +73,7 @@ TEST(UniversalSDKTest, GetPlatformMatchesCompileTimeDetection) {
 #if defined(_WIN32)
     EXPECT_EQ(sdk->GetPlatform(), Platform::WINDOWS);
 #elif defined(__ANDROID__)
-    EXPECT_EQ(sdk->GetPlatform(), Platform::ANDROID);
+    EXPECT_EQ(sdk->GetPlatform(), Platform::ANDROID_OS);
 #elif defined(__linux__)
     EXPECT_EQ(sdk->GetPlatform(), Platform::LINUX);
 #endif

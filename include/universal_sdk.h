@@ -12,18 +12,15 @@ namespace UniversalSDK {
 // before the full class definition below.
 class PlatformImpl;
 
-// Undefine macros that may be injected by build systems (e.g. Android NDK's
-// -DANDROID) and would otherwise be expanded inside the enum body, turning
-// the enumerator name into an empty token and causing a compile error.
-#ifdef ANDROID
-#undef ANDROID
-#endif
-
-// Platform enumeration
+// Platform enumeration.
+// NOTE: The value is named ANDROID_OS (not ANDROID) to avoid a collision with
+// the ANDROID preprocessor macro injected by the Android NDK's -DANDROID flag.
+// Using ANDROID as an enumerator name would cause a compile error because the
+// preprocessor would expand it to an empty token inside the enum body.
 enum class Platform {
     WINDOWS,
     LINUX,
-    ANDROID,
+    ANDROID_OS,
     UNKNOWN
 };
 
