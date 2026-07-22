@@ -3,3 +3,11 @@ build_test/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
+
+# Android
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/
+*.apk
+*.aab
