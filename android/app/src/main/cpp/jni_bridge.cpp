@@ -5,6 +5,7 @@
 
 #include <jni.h>
 #include <android/log.h>
+#include <iomanip>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -26,23 +27,36 @@ namespace {
 std::string JstrToStd(JNIEnv* env, jstring js) {
     if (!js) return "";
     const char* cs = env->GetStringUTFChars(js, nullptr);
-    std::string s(cs ? cs : "");
+    if (!cs) return "";
+    std::string s(cs);
     env->ReleaseStringUTFChars(js, cs);
     return s;
 }
 
-// Minimal JSON string escaper.
+// JSON string escaper.
 std::string EscapeJson(const std::string& s) {
     std::string out;
     out.reserve(s.size());
-    for (char c : s) {
+    for (unsigned char c : s) {
         switch (c) {
             case '"':  out += "\\\""; break;
             case '\\': out += "\\\\"; break;
+            case '\b': out += "\\b";  break;
+            case '\f': out += "\\f";  break;
             case '\n': out += "\\n";  break;
             case '\r': out += "\\r";  break;
             case '\t': out += "\\t";  break;
-            default:   out += c;     break;
+            default:
+                if (c < 0x20) {
+                    std::ostringstream escaped;
+                    escaped << "\\u"
+                            << std::hex << std::uppercase << std::setw(4)
+                            << std::setfill('0') << static_cast<int>(c);
+                    out += escaped.str();
+                } else {
+                    out += static_cast<char>(c);
+                }
+                break;
         }
     }
     return out;
@@ -82,8 +96,7 @@ Java_com_universalsdk_legalassist_LegalAssistantJNI_queryLegalAdvice(
     const std::string questionStr     = JstrToStd(env, question);
     const std::string caseSummaryStr  = JstrToStd(env, caseSummary);
 
-    LOGI("queryLegalAdvice: inmate=%s jurisdiction=%s caseType=%s",
-         inmateIdStr.c_str(), jurisdictionStr.c_str(), caseTypeStr.c_str());
+    LOGI("queryLegalAdvice request received");
 
     try {
         // Wire up the in-memory providers.

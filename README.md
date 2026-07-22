@@ -157,7 +157,7 @@ chmod +x gradlew
 ./gradlew assembleDebug
 ```
 
-The signed release APK:
+The debug-signed release APK (for local testing only):
 ```bash
 ./gradlew assembleRelease
 ```

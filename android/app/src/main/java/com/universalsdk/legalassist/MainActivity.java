@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox  checkConsent;
     private Button    btnSubmit;
     private ProgressBar progressBar;
-    private ScrollView  scrollResults;
+    private ScrollView  scrollRoot;
     private TextView    tvResults;
 
     @Override
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         checkConsent    = findViewById(R.id.checkConsent);
         btnSubmit       = findViewById(R.id.btnSubmit);
         progressBar     = findViewById(R.id.progressBar);
-        scrollResults   = findViewById(R.id.scrollResults);
+        scrollRoot      = findViewById(R.id.scrollRoot);
         tvResults       = findViewById(R.id.tvResults);
 
         btnSubmit.setOnClickListener(v -> submitQuery());
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnSubmit.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
-        scrollResults.setVisibility(View.GONE);
+        tvResults.setVisibility(View.GONE);
 
         // Run the native call on a background thread to keep the UI responsive.
         new Thread(() -> {
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     displayResult(result);
                 } catch (JSONException e) {
                     tvResults.setText(getString(R.string.error_parse_failed) + "\n" + e.getMessage());
-                    scrollResults.setVisibility(View.VISIBLE);
+                    tvResults.setVisibility(View.VISIBLE);
                 }
             });
         }).start();
@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
         appendSection(sb, "Disclaimers",    result.disclaimers,   false);
 
         tvResults.setText(sb.toString().trim());
-        scrollResults.setVisibility(View.VISIBLE);
-        scrollResults.post(() -> scrollResults.fullScroll(View.FOCUS_UP));
+        tvResults.setVisibility(View.VISIBLE);
+        scrollRoot.post(() -> scrollRoot.smoothScrollTo(0, tvResults.getTop()));
     }
 
     private void appendSection(

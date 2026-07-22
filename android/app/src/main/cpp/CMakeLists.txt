@@ -21,7 +21,7 @@ add_library(legal_assist_jni SHARED
 )
 
 target_compile_definitions(legal_assist_jni PRIVATE
-    UNIVERSAL_SDK_VERSION="2.0.0"
+    UNIVERSAL_SDK_VERSION="${UNIVERSAL_SDK_VERSION}"
 )
 
 target_link_libraries(legal_assist_jni
