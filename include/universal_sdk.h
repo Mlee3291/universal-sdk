@@ -12,13 +12,20 @@ namespace UniversalSDK {
 // before the full class definition below.
 class PlatformImpl;
 
-// Platform enumeration
+// Platform enumeration.
+// push_macro/pop_macro temporarily suppress the ANDROID preprocessor token
+// (injected as -DANDROID by the Android NDK build system) so it cannot expand
+// the enumerator name to an empty token inside the enum body.  The macro is
+// fully restored afterwards, so downstream #ifdef ANDROID checks are unaffected.
+#pragma push_macro("ANDROID")
+#undef ANDROID
 enum class Platform {
     WINDOWS,
     LINUX,
     ANDROID,
     UNKNOWN
 };
+#pragma pop_macro("ANDROID")
 
 // Core SDK interface
 class UniversalSDK {
