@@ -8,6 +8,10 @@
 
 namespace UniversalSDK {
 
+// Forward declaration so UniversalSDK can hold a unique_ptr<PlatformImpl>
+// before the full class definition below.
+class PlatformImpl;
+
 // Platform enumeration
 enum class Platform {
     WINDOWS,
@@ -48,11 +52,13 @@ public:
         std::shared_ptr<RetrievalProvider> retrieval_provider,
         std::shared_ptr<InmateDataConnector> data_connector,
         std::shared_ptr<PolicyEngine> policy_engine,
-        LegalAssistantConfig config = LegalAssistantConfig{}) const;
+        LegalAssistantConfig config = LegalAssistantConfig{},
+        std::shared_ptr<AuditWriter> audit_writer = nullptr) const;
 
 private:
     bool initialized_;
     Platform current_platform_;
+    std::unique_ptr<PlatformImpl> platform_impl_;
 };
 
 // Platform-specific implementation interface

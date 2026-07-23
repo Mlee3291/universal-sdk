@@ -1,4 +1,4 @@
-#include "../include/universal_sdk.h"
+#include "universal_sdk.h"
 #include <windows.h>
 #include <sstream>
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(universal-sdk VERSION 1.0.0 LANGUAGES CXX)
+project(universal-sdk VERSION 2.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,15 +11,20 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SOURCES
     src/universal_sdk.cpp
     src/legal_assistant.cpp
+    src/stub_providers.cpp
+    src/file_audit_writer.cpp
 )
 
-# Platform-specific implementations
+# Platform-specific implementations — exactly one file is compiled.
+# Android must be checked before UNIX since Android is also UNIX.
 if(WIN32)
     list(APPEND SOURCES src/platform/win32_impl.cpp)
-elseif(LINUX)
-    list(APPEND SOURCES src/platform/linux_impl.cpp)
 elseif(ANDROID)
     list(APPEND SOURCES src/platform/android_impl.cpp)
+elseif(UNIX)
+    list(APPEND SOURCES src/platform/linux_impl.cpp)
+else()
+    list(APPEND SOURCES src/platform/stub_platform_impl.cpp)
 endif()
 
 # Create the library
@@ -38,39 +43,71 @@ target_include_directories(universal_sdk
         $<INSTALL_INTERFACE:include>
 )
 
+# Expose the CMake project version to C++ code via a compile definition so that
+# GetVersion() and CMakeLists.txt stay in sync automatically.
+target_compile_definitions(universal_sdk PRIVATE
+    UNIVERSAL_SDK_VERSION="${PROJECT_VERSION}"
+)
+
 # Installation rules
 install(TARGETS universal_sdk
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
 )
 
-install(FILES include/universal_sdk.h
+install(FILES
+    include/universal_sdk.h
+    include/legal_assistant.h
+    include/stub_providers.h
+    include/file_audit_writer.h
     DESTINATION include
 )
 
-install(FILES include/legal_assistant.h
-    DESTINATION include
-)
-
+# ---------------------------------------------------------------------------
 # Tests
+# ---------------------------------------------------------------------------
 enable_testing()
 
 find_package(GTest QUIET)
 if(GTest_FOUND)
+    # Helper macro to reduce duplication
+    macro(add_sdk_test target_name)
+        target_include_directories(${target_name} PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include
+        )
+        target_link_libraries(${target_name}
+            universal_sdk
+            GTest::GTest
+            GTest::Main
+        )
+        include(GoogleTest)
+        gtest_discover_tests(${target_name})
+    endmacro()
+
+    # legal_assistant tests — link against the library
     add_executable(legal_assistant_test
         tests/legal_assistant_test.cpp
-        src/legal_assistant.cpp
     )
+    add_sdk_test(legal_assistant_test)
 
-    target_include_directories(legal_assistant_test PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    # universal_sdk core tests — link against the library
+    add_executable(universal_sdk_test
+        tests/universal_sdk_test.cpp
     )
-
-    target_link_libraries(legal_assistant_test
-        GTest::GTest
-        GTest::Main
-    )
-
-    include(GoogleTest)
-    gtest_discover_tests(legal_assistant_test)
+    add_sdk_test(universal_sdk_test)
+else()
+    message(STATUS "GTest not found; skipping test targets. Install GTest to enable test discovery and execution.")
 endif()
+
+# ---------------------------------------------------------------------------
+# Examples
+# ---------------------------------------------------------------------------
+add_executable(legal_assistant_sample
+    examples/legal_assistant_sample.cpp
+)
+target_include_directories(legal_assistant_sample PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+target_link_libraries(legal_assistant_sample
+    universal_sdk
+)

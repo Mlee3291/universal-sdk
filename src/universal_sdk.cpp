@@ -17,6 +17,11 @@ UniversalSDK::~UniversalSDK() {
 
 bool UniversalSDK::Initialize() {
     try {
+        platform_impl_ = CreatePlatformImpl();
+        if (!platform_impl_ || !platform_impl_->Initialize()) {
+            return false;
+        }
+
         // Detect platform
 #ifdef _WIN32
         current_platform_ = Platform::WINDOWS;
@@ -26,6 +31,8 @@ bool UniversalSDK::Initialize() {
         current_platform_ = Platform::ANDROID;
 #else
         current_platform_ = Platform::UNKNOWN;
+        platform_impl_->Shutdown();
+        platform_impl_.reset();
         return false;
 #endif
         initialized_ = true;
@@ -38,6 +45,10 @@ bool UniversalSDK::Initialize() {
 
 void UniversalSDK::Shutdown() {
     if (initialized_) {
+        if (platform_impl_) {
+            platform_impl_->Shutdown();
+            platform_impl_.reset();
+        }
         initialized_ = false;
     }
 }
@@ -60,7 +71,7 @@ std::string UniversalSDK::GetPlatformName() const {
 }
 
 std::string UniversalSDK::GetVersion() const {
-    return "1.0.0";
+    return UNIVERSAL_SDK_VERSION;
 }
 
 std::string UniversalSDK::GetSDKInfo() const {
@@ -68,22 +79,18 @@ std::string UniversalSDK::GetSDKInfo() const {
 }
 
 bool UniversalSDK::ExecuteCommand(const std::string& command) {
-    if (!initialized_) {
+    if (!initialized_ || !platform_impl_) {
         std::cerr << "SDK not initialized" << std::endl;
         return false;
     }
-    
-    // Command execution will be delegated to platform-specific implementation
-    // This is a placeholder
-    return true;
+    return platform_impl_->ExecuteCommand(command);
 }
 
 std::string UniversalSDK::GetSystemInfo() {
-    if (!initialized_) {
+    if (!initialized_ || !platform_impl_) {
         return "SDK not initialized";
     }
-    
-    return "System running on: " + GetPlatformName();
+    return platform_impl_->GetSystemInfo();
 }
 
 bool UniversalSDK::IsInitialized() const {
@@ -105,13 +112,15 @@ std::unique_ptr<LegalAssistant> UniversalSDK::CreateLegalAssistant(
     std::shared_ptr<RetrievalProvider> retrieval_provider,
     std::shared_ptr<InmateDataConnector> data_connector,
     std::shared_ptr<PolicyEngine> policy_engine,
-    LegalAssistantConfig config) const {
+    LegalAssistantConfig config,
+    std::shared_ptr<AuditWriter> audit_writer) const {
     return std::make_unique<LegalAssistant>(
         std::move(llm_provider),
         std::move(retrieval_provider),
         std::move(data_connector),
         std::move(policy_engine),
-        std::move(config));
+        std::move(config),
+        std::move(audit_writer));
 }
 
 } // namespace UniversalSDK

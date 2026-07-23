@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <memory>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <thread>
@@ -282,6 +283,48 @@ TEST(LegalAssistantAdviseTest, ResponseIncludesDisclaimers) {
 }
 
 // ---------------------------------------------------------------------------
+// INMATE role enforcement
+// ---------------------------------------------------------------------------
+
+TEST(LegalAssistantAdviseTest, InmateAllowedWhenRequesterIdMatchesInmateId) {
+    auto assistant = MakeAssistant();
+    LegalQueryContext ctx = MakeValidContext();
+    ctx.role = AccessRole::INMATE;
+    ctx.requester_id = ctx.inmate_id;  // "I-001" == "I-001"
+    LegalAdviceResponse resp = assistant->Advise(ctx);
+    EXPECT_FALSE(resp.escalated);
+}
+
+TEST(LegalAssistantAdviseTest, InmateDeniedWhenRequesterIdMismatch) {
+    auto assistant = MakeAssistant();
+    LegalQueryContext ctx = MakeValidContext();
+    ctx.role = AccessRole::INMATE;
+    ctx.requester_id = "I-999";  // different from inmate_id "I-001"
+    LegalAdviceResponse resp = assistant->Advise(ctx);
+    EXPECT_TRUE(resp.escalated);
+    EXPECT_NE(resp.escalation_reason.find("own records"), std::string::npos);
+}
+
+TEST(LegalAssistantAdviseTest, InmateDeniedWhenRequesterIdIsEmpty) {
+    auto assistant = MakeAssistant();
+    LegalQueryContext ctx = MakeValidContext();
+    ctx.role = AccessRole::INMATE;
+    ctx.requester_id = "";
+    LegalAdviceResponse resp = assistant->Advise(ctx);
+    EXPECT_TRUE(resp.escalated);
+}
+
+TEST(LegalAssistantAdviseTest, NonInmateRoleNotRestrictedByRequesterId) {
+    // LEGAL_ADVOCATE should not be subject to the INMATE id-match check.
+    auto assistant = MakeAssistant();
+    LegalQueryContext ctx = MakeValidContext();
+    ctx.role = AccessRole::LEGAL_ADVOCATE;
+    ctx.requester_id = "";  // empty is fine for non-INMATE roles
+    LegalAdviceResponse resp = assistant->Advise(ctx);
+    EXPECT_FALSE(resp.escalated);
+}
+
+// ---------------------------------------------------------------------------
 // Audit trail
 // ---------------------------------------------------------------------------
 
@@ -365,4 +408,76 @@ TEST(AuditIdTest, AuditIdsAreUniqueUnderConcurrentAdviceCalls) {
         ids.insert(event.audit_id);
     }
     EXPECT_EQ(ids.size(), trail.size());
+}
+
+// ---------------------------------------------------------------------------
+// AuditWriter integration
+// ---------------------------------------------------------------------------
+
+// Captures all written events in a vector for test inspection.
+class CapturingAuditWriter : public AuditWriter {
+public:
+    void Write(const AuditEvent& event) override {
+        std::lock_guard<std::mutex> lock(mutex_);
+        events_.push_back(event);
+    }
+
+    std::vector<AuditEvent> Events() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return events_;
+    }
+
+private:
+    mutable std::mutex mutex_;
+    std::vector<AuditEvent> events_;
+};
+
+static std::shared_ptr<LegalAssistant> MakeAssistantWithWriter(
+    std::shared_ptr<AuditWriter> writer) {
+    return std::make_shared<LegalAssistant>(
+        std::make_shared<FakeLLMProvider>(),
+        std::make_shared<FakeRetrievalProvider>(),
+        std::make_shared<FakeInmateDataConnector>(),
+        std::make_shared<DefaultPolicyEngine>(),
+        MakeConfig(),
+        std::move(writer));
+}
+
+TEST(AuditWriterTest, WriterReceivesEventOnSuccessfulAdvice) {
+    auto writer = std::make_shared<CapturingAuditWriter>();
+    auto assistant = MakeAssistantWithWriter(writer);
+    assistant->Advise(MakeValidContext());
+    ASSERT_EQ(writer->Events().size(), 1u);
+    EXPECT_EQ(writer->Events()[0].action, "advice_generated");
+}
+
+TEST(AuditWriterTest, WriterReceivesEventOnAccessDenied) {
+    auto writer = std::make_shared<CapturingAuditWriter>();
+    auto assistant = std::make_shared<LegalAssistant>(
+        std::make_shared<FakeLLMProvider>(),
+        std::make_shared<FakeRetrievalProvider>(),
+        std::make_shared<FakeInmateDataConnector>(/*has_access=*/false),
+        std::make_shared<DefaultPolicyEngine>(),
+        MakeConfig(),
+        writer);
+    assistant->Advise(MakeValidContext());
+    ASSERT_EQ(writer->Events().size(), 1u);
+    EXPECT_EQ(writer->Events()[0].action, "access_denied");
+}
+
+TEST(AuditWriterTest, WriterAndInMemoryTrailBothRecordSameEvent) {
+    auto writer = std::make_shared<CapturingAuditWriter>();
+    auto assistant = MakeAssistantWithWriter(writer);
+    assistant->Advise(MakeValidContext());
+
+    const auto& trail = assistant->GetAuditTrail();
+    const auto captured = writer->Events();
+
+    ASSERT_EQ(trail.size(), captured.size());
+    EXPECT_EQ(trail[0].audit_id, captured[0].audit_id);
+    EXPECT_EQ(trail[0].action, captured[0].action);
+}
+
+TEST(AuditWriterTest, NullWriterDoesNotCrash) {
+    EXPECT_NO_THROW(MakeAssistant());
 }
